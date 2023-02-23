@@ -1,5 +1,12 @@
 #include <string>
-#include "roman-to-arabic.h"
+
+class Solution {
+public:
+    int romanToInt(std::string s);
+private:
+    int ArabicEquivalentToRoman(char c);
+    int MakeArabicNumber(int *arr, int size);
+};
 
 int Solution::romanToInt(std::string s) {
     int size = static_cast<int>(s.size());

@@ -3,73 +3,37 @@ public:
     MyQueue() {}
     
     void push(int x) {
-        swap_if_first_is_empty();
-        first_.push(x);
+        if (s1_.empty()) front = x;
+        moving_elements(s1_, s2_);    
+        s2_.push(x);
+        moving_elements(s2_, s1_);
     }
     
     int pop() {
-        swap_if_first_is_empty();
-
-        int tmp;
-        int size = first_.size() - 1;
-        move_all_elements(tmp, size);
-        
-        tmp = first_.top();
-        first_.pop();
-
-        move_all_elements(second_.size());
-
-        return tmp;
+        int res = s1_.top();
+        s1_.pop();
+        if (!s1_.empty()) front = s1_.top();
+        return res;
     }
     
-    int peek() {
-        swap_if_first_is_empty();
-
-        int tmp;
-        int size = first_.size();
-        move_all_elements(tmp, size);
-
-        move_all_elements(second_.size());
-        
-        return tmp;
+    int peek() const noexcept {
+        return front;
     }
     
-    bool empty() const {
-        return first_.empty() && second_.empty();
+    bool empty() const noexcept {
+        return s1_.empty() && s2_.empty();
     }
 
 private:
-    std::stack<int> first_;
-    std::stack<int> second_;
+    std::stack<int> s1_;
+    std::stack<int> s2_;
+    int front;
 
-    void swap_if_first_is_empty() {
-        if (first_.empty()) std::swap(first_, second_);
-    }
-
-    inline int move_element() {
-        int tmp = first_.top();
-        first_.pop();
-        second_.push(tmp);
-        return tmp;
-    }
-
-    inline void move_element_from_second() {
-        int tmp = second_.top();
-        second_.pop();
-        first_.push(tmp);
-    }
-
-    void move_all_elements(int& tmp, int size) {
-        while (size > 0) {
-            tmp = move_element();
-            size--;
-        }
-    }
-
-    void move_all_elements(int size) {
-        while (size > 0) {
-            move_element_from_second();
-            size--;
+    static inline void moving_elements(std::stack<int>& s1, std::stack<int>& s2) {
+        while (!s1.empty()) {
+            int tmp = s1.top();
+            s2.push(tmp);
+            s1.pop();
         }
     }
 };

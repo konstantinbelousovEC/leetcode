@@ -1,61 +1,37 @@
-
-
 class MyStack {
 public:
-    MyStack() {
-
-    }
+    MyStack() = default;
 
     void push(int x) {
-        swap_if_first_is_empty();
-        first_.push(x);
+        q2_.push(x);
+        top_ = x;
+
+        while(!q1_.empty()) {
+            int tmp = q1_.front();
+            q1_.pop();
+            q2_.push(tmp);
+        }
+        std::swap(q1_, q2_);
     }
 
     int pop() {
-        swap_if_first_is_empty();
-
-        int tmp;
-        iterate(tmp, first_.size() - 1);
-
-        tmp = first_.front();
-        first_.pop();
-
-        return tmp;
+        int res = top_;
+        q1_.pop();
+        if (!q1_.empty()) top_ = q1_.front();
+        return res;
     }
 
-    int top() {
-        swap_if_first_is_empty();
-
-        int tmp;
-        iterate(tmp, first_.size());
-
-        return tmp;
+    int top() const noexcept {
+        return top_;
     }
 
-    inline bool empty() const {
-        return first_.empty() && second_.empty();
+    inline bool empty() const noexcept {
+        return q1_.empty();
     }
 
 private:
-    std::queue<int> first_;
-    std::queue<int> second_;
+    std::queue<int> q1_;
+    std::queue<int> q2_;
+    int top_;
 
-    inline void swap_if_first_is_empty() {
-        if (first_.empty()) std::swap(first_, second_);
-    }
-
-    inline int move_elements() {
-        auto tmp = first_.front();
-        first_.pop();
-        second_.push(tmp);
-      
-        return tmp;
-    }
-
-    inline void iterate(int& tmp, int size) {
-        while (size > 0) {
-            tmp = move_elements();
-            size--;
-        }
-    }
 };

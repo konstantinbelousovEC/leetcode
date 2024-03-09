@@ -1,4 +1,5 @@
-// Array Hash Table
+// Array, Hash Table
+// https://leetcode.com/problems/two-sum/description/
 
 class Solution {
 public:

@@ -3,7 +3,7 @@
 
 class Solution {
 public:
-    int romanToInt(std::string s) {
+    int romanToInt(const std::string& s) {
         std::vector<int> nums;
         nums.reserve(s.size());
 

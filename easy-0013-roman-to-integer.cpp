@@ -1,53 +1,45 @@
-#include <string>
+// Hash Table, Math, String
+// https://leetcode.com/problems/roman-to-integer/description/
 
 class Solution {
 public:
-    int romanToInt(std::string s);
+    int romanToInt(std::string s) {
+        std::vector<int> nums;
+        nums.reserve(s.size());
+
+        for (char c : s)
+            nums.push_back(romanSymbolToDigit(c));
+
+        int result = 0;
+        int i = 0;
+        int n = nums.size();
+        while (i < n) {
+            if ((i == n - 1) || (nums[i] >= nums[i + 1])) {
+                result += nums[i];
+                i++;
+            } else {
+                result += nums[i + 1] - nums[i];
+                i += 2;
+            }
+        }
+
+        return result;
+    }
+
 private:
-    int ArabicEquivalentToRoman(char c);
-    int MakeArabicNumber(int *arr, int size);
+    inline int romanSymbolToDigit(char c) {
+        switch (c) {
+            case 'I': return 1;
+            case 'V': return 5;
+            case 'X': return 10;
+            case 'L': return 50;
+            case 'C': return 100;
+            case 'D': return 500;
+            case 'M': return 1000;
+        }
+
+        return 0;
+    }
+
 };
 
-int Solution::romanToInt(std::string s) {
-    int size = static_cast<int>(s.size());
-    int arr[size];
-    for (int i = 0; i < size; i++) {
-        arr[i] = ArabicEquivalentToRoman(s[i]);
-    }
-    return MakeArabicNumber(arr, size);
-}
-
-int Solution::ArabicEquivalentToRoman(char c) {
-    switch (c) {
-        case 'I':    return 1;
-        case 'V':    return 5;
-        case 'X':    return 10;
-        case 'L':    return 50;
-        case 'C':    return 100;
-        case 'D':    return 500;
-        case 'M':    return 1000;
-        default:     return 0;
-    }
-}
-
-int Solution::MakeArabicNumber(int *arr, int size) {
-    int result = 0;
-    int tmp = 0;
-    for (int i = 0; i < size; i++) {
-        if (i == size - 1) {
-            if (i == 0) return arr[i];
-            if (arr[i] > arr[i - 1]) {
-                result = result + (arr[i] - tmp);
-                tmp = 0;
-            } else {
-                result = result + arr[i];
-            }
-        } else if (arr[i] < arr[i + 1]) {
-            tmp = arr[i];
-        } else {
-            result += (arr[i] - tmp);
-            tmp = 0;
-        }
-    }
-    return result;
-}

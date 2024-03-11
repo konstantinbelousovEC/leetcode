@@ -1,73 +1,40 @@
-#include <cassert>
-#include <iostream>
-#include <string>
-#include <stack>
-#include <unordered_map>
-
-using namespace std;
+// String, Stack
+// https://leetcode.com/problems/valid-parentheses/description/
 
 class Solution {
 public:
-    bool isValid(string s) const {
-        if (s.size() == 1) return false;
-
-        std::stack<char> container;
-        container.push(s.front());
-        for (int i = 1; i < s.size(); i++) {
-            if (s[i] == '(' || s[i] == '{' || s[i] == '[') {
-                container.push(s[i]);
-                continue;
-            }
-            if (!container.empty() && container.top() == pairs_.at(s[i])) {
-                container.pop();
-            } else {
-                container.push(s[i]);
+    bool isValid(const std::string& s) {
+        std::stack<char> stack;
+        for (char c : s) {
+            if (is_open_type(c)) stack.push(c);
+            else {
+                if (!stack.empty() && stack.top() == get_pair(c)) stack.pop();
+                else return false;
             }
         }
-        return container.empty();
+
+        return stack.empty();
     }
+
 private:
-    const std::unordered_map<char, char> pairs_ = {{')', '('}, {'}', '{'}, {']', '['}};
+    inline char get_pair(char c) {
+        switch (c) {
+            case ')': return '(';
+            case ']': return '[';
+            case '}': return '{';
+
+            default: return '-';
+        }
+    }
+
+    inline bool is_open_type(char c) {
+        switch (c) {
+            case '(': return true;
+            case '[': return true;
+            case '{': return true;
+
+            default: return false;
+        }
+    }
 };
 
-void Tests() {
-    Solution solution;
-
-    {
-        string test_str = "()[]{}"s;
-        assert(solution.isValid(test_str));
-    }
-    {
-        string test_str = "()"s;
-        assert(solution.isValid(test_str));
-    }
-    {
-        string test_str = "(]"s;
-        assert(!solution.isValid(test_str));
-    }
-    {
-        string test_str = "(){}}{"s;
-        assert(!solution.isValid(test_str));
-    }
-    {
-        string test_str = "([])"s;
-        assert(solution.isValid(test_str));
-    }
-    {
-        string test_str = "([({[]})])"s;
-        assert(solution.isValid(test_str));
-    }
-    {
-        string test_str = "([([][]{}[])])"s;
-        assert(solution.isValid(test_str));
-    }
-    {
-        string test_str = "([({[)})])"s;
-        assert(!solution.isValid(test_str));
-    }
-    cout << "Tests passed"s << endl;
-}
-
-int main() {
-    Tests();
-}
